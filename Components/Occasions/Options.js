@@ -15,7 +15,6 @@ const Options = (props) => {
     return (
       <View style={styles.options}>
         <TouchableHighlight 
-        onPressIn={() => }
         onPress={()=>{            
             props.setFilterOption(1);
             }}>
