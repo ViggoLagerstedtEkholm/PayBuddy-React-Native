@@ -13,14 +13,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Home from './Components/Home/Home';
 import Settings from './Components/Settings/Settings';
-import Occasions from './Components/Occasions/Occasions';
+import Search from './Components/Occasions/Search';
 import Map from './Components/Maps/Map';
 
 export default function App() {
   const Tab = createBottomTabNavigator();
-  const Stack = createNativeStackNavigator();
-
-  const color =  '#63008a';
+  const color =  '#b700ff';
 
   return (
       <NavigationContainer>
@@ -28,6 +26,9 @@ export default function App() {
             initialRouteName="Overview"
             screenOptions={
               {
+              tabBarStyle:{
+                backgroundColor: '#1c1c1c',
+              },
               headerStyle:{
                 backgroundColor: '#1c1c1c',
               },
@@ -41,7 +42,7 @@ export default function App() {
           options={{
             tabBarLabel: 'Settings',
             tabBarIcon: () => (            
-                <AntDesign name="setting" size={24} color={color} />            
+                <AntDesign name="setting" size={22} color={color} />            
             ),
           }}
           />
@@ -51,17 +52,17 @@ export default function App() {
           options={{
             tabBarLabel: 'Overview',
             tabBarIcon: () => (            
-               <MaterialCommunityIcons name="database" color={color} size={26} />
+               <MaterialCommunityIcons name="database" size={22} color={color}/>
             ),
           }}
           />
           <Tab.Screen 
-          name="Occasions" 
-          component={Occasions}
+          name="Search" 
+          component={Search}
           options={{
             tabBarLabel: 'Occasions',
             tabBarIcon: () => (            
-                <AntDesign name="book" size={24} color={color} />            
+                <AntDesign name="book" size={22} color={color} />            
             ),
           }}
           />
@@ -72,7 +73,7 @@ export default function App() {
           options={{
             tabBarLabel: 'Map',
             tabBarIcon: () => (            
-                <AntDesign name="enviromento" size={24} color="black" />
+                <AntDesign name="enviromento" size={22} color={color} />
             ),
           }} />
 

@@ -7,7 +7,7 @@ import {
 
 import Statistic from './Statistic';
 
-export default function Home({navigation }) {
+export default function Home() {
   return (
         <ScrollView style={styles.container}>
             <Statistic name="Sum of all occasions" value="15525.5 kr"/>
