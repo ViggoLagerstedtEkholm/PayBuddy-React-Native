@@ -12,25 +12,26 @@ import Options from './Options';
 
 export default function Search() {
   const [searchPhrase, setSearchPhrase] = useState("");
-  const [filterOption, setFilterOption] = useState(1);
+  const [filterOption, setFilterOption] = useState(2);
   const [clicked, setClicked] = useState(false);
   const [fakeData, setFakeData] = useState();
 
   useEffect(() => {
-    const getData = async () => {
-      const apiResponse = await fetch(
-        "https://my-json-server.typicode.com/kevintomas1995/logRocket_searchBar/languages"
-      );
-      const data = await apiResponse.json();
-      setFakeData(data);
-    };
-    getData();
+    setFakeData([
+      {title: "Title1", value: "Value1", status: 2},
+      {title: "Title2", value: "Value2", status: 3},
+      {title: "Title3", value: "Value3", status: 3},
+      {title: "Title4", value: "Value4", status: 3},
+      {title: "Title5", value: "Value5", status: 4},
+      {title: "Title6", value: "Value6", status: 4},
+      {title: "Title7", value: "Value7", status: 2},
+  ])
+    
   }, []);
 
  return (
     <SafeAreaView style={styles.root}>
       {!clicked && <Text style={styles.title}>Occasions</Text>}
-        <Text>{filterOption}</Text>
         <Filtering
           searchPhrase={searchPhrase}
           setSearchPhrase={setSearchPhrase}
@@ -46,6 +47,7 @@ export default function Search() {
         <List
           searchPhrase={searchPhrase}
           data={fakeData}
+          filterOption={filterOption}
           setClicked={setClicked}
         />
 
@@ -63,9 +65,9 @@ const styles = StyleSheet.create({
   title: {
     width: "100%",
     marginTop: 20,
-    fontSize: 25,
+    fontSize: 18,
     color: "#c6a1e7",
+    textAlign: "center",
     fontWeight: "bold",
-    marginLeft: "10%",
   },
 });

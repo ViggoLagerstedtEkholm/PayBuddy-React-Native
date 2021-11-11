@@ -4,8 +4,7 @@ import {
     View,
     TextInput,
     Button,
-    Keyboard,
-    Picker
+    Keyboard
 } from "react-native";
 
 import { Feather, Entypo } from "@expo/vector-icons";

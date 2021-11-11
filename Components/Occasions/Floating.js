@@ -1,8 +1,6 @@
 import React from 'react';
 import { 
   StyleSheet, 
-  SafeAreaView,
-  Text, 
   Pressable
 } from 'react-native';
 import { Entypo } from '@expo/vector-icons'; 
@@ -22,7 +20,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,            
     backgroundColor: '#c6a1e7',                                    
     position: 'absolute',                                          
-    bottom: 20,                                                    
+    bottom: 25,                                                    
     right: 20
   },
   icon: {

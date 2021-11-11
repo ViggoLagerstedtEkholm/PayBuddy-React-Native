@@ -10,19 +10,17 @@ import {
 import Item from './Item';
   
 const List = (props) => {
-
     const renderItem = ({ item }) => {
-      // when no input, show all
-      if (props.searchPhrase === "") {
-        return <Item name={item.name} details={item.details} />;
-      }
-      // filter of the name
-      if (item.name.toUpperCase().includes(props.searchPhrase.toUpperCase().trim().replace(/\s/g, ""))) {
-        return <Item name={item.name} details={item.details} />;
-      }
-      // filter of the description
-      if (item.details.toUpperCase().includes(props.searchPhrase.toUpperCase().trim().replace(/\s/g, ""))) {
-        return <Item name={item.name} details={item.details} />;
+      if(item.status === props.filterOption || props.filterOption === 1){
+        if (props.searchPhrase === "") {
+            return <Item title={item.title} value={item.value} status={item.status}/>;
+          }
+          if (item.title.toUpperCase().includes(props.searchPhrase.toUpperCase().trim().replace(/\s/g, ""))) {
+            return <Item title={item.title} value={item.value} status={item.status}/>;
+          }
+          if (item.value.toUpperCase().includes(props.searchPhrase.toUpperCase().trim().replace(/\s/g, ""))) {
+            return <Item title={item.title} value={item.value} status={item.status}/>;
+          }
       }
     };
   
