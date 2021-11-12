@@ -17,16 +17,14 @@ const Filtering = (props) => {
             !props.clicked
               ? styles.searchBar__unclicked
               : styles.searchBar__clicked
-          }
-        >
-          {/* search Icon */}
+          }>
+
           <Feather
             name="search"
             size={20}
             color="black"
-            style={{ marginLeft: 1 }}
-          />
-          {/* Input field */}
+            style={{ marginLeft: 1 }}/>
+
           <TextInput
             style={styles.input}
             placeholder="Search"
@@ -34,27 +32,16 @@ const Filtering = (props) => {
             onChangeText={props.setSearchPhrase}
             onFocus={() => {
               props.setClicked(true);
-            }}
-          />
-          {/* cross Icon, depending on whether the search bar is clicked or not */}
+            }}/>
+
           {props.clicked && (
             <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
-                props.setSearchPhrase("")
+                props.setSearchPhrase("");
+                props.setClicked(false);
             }}/>
           )}
+          
         </View>
-        {/* cancel button, depending on whether the search bar is clicked or not */}
-        {props.clicked && (
-          <View>
-            <Button
-              title="Cancel"
-              onPress={() => {
-                Keyboard.dismiss();
-                props.setClicked(false);
-              }}
-            ></Button>
-          </View>
-        )}
       </View>
     );
   };
