@@ -5,9 +5,9 @@ import {
 } from 'react-native';
 import { Entypo } from '@expo/vector-icons'; 
 
-export default function Floating() {
+export default function Floating({onNavigate}) {
     return (
-        <Pressable style={styles.button} onPress={() => alert('Pressed.')}>
+        <Pressable style={styles.button} onPress={() => onNavigate()}>
           <Entypo style={styles.icon} name="add-to-list" size={24} color="black" />
         </Pressable>
     );

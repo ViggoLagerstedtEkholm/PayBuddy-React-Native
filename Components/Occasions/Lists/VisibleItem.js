@@ -22,7 +22,7 @@ import {
 
 const styles = StyleSheet.create({
   rowFrontVisible: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#3a2d49",
     borderRadius: 5,
     height: 150,
     marginTop: 5,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   StyleSheet, 
   SafeAreaView,
@@ -15,17 +15,15 @@ import Filtering from "./Filtering";
 import Floating from "./Floating";
 import Options from './Options';
 
-export default function Search() {
+export default function Search({ navigation }) {
   const [searchPhrase, setSearchPhrase] = useState("");
   const [filterOption, setFilterOption] = useState(2);
   const [clicked, setClicked] = useState(false);
   const [data, setData] = useState([]);
 
-
  return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'powderblue' }}>
         <View style={{ flex: 1, backgroundColor: '#121212' }}> 
-
           <Filtering
             searchPhrase={searchPhrase}
             setSearchPhrase={setSearchPhrase}
@@ -75,11 +73,10 @@ export default function Search() {
               setClicked={setClicked}
             /> : null
         }
-       
         </View>
-   
 
-        <Floating/>
+      <Floating onNavigate={() => navigation.navigate('Title')}/>
+
     </SafeAreaView>
   );
 }

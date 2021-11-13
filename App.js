@@ -15,9 +15,30 @@ import Home from './Components/Home/Home';
 import Settings from './Components/Settings/Settings';
 import Search from './Components/Occasions/Search';
 import Map from './Components/Maps/Map';
+import TitleScreen from './Components/Occasions/Add/TitleScreen';
+import ItemScreen from './Components/Occasions/Add/ItemScreen';
+import LocationScreen from './Components/Occasions/Add/LocationScreen';
+import PeopleScreen from './Components/Occasions/Add/PeopleScreen';
+import Overview from './Components/Occasions/Add/Overview';
+
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function OccasionStack(){
+  return(
+    <Stack.Navigator initialRouteName="Occasions">
+      <Stack.Screen name="Occasions" component={Search}/>
+      <Stack.Screen name="Title" component={TitleScreen}/>
+      <Stack.Screen name="Items" component={ItemScreen}/>
+      <Stack.Screen name="Location" component={LocationScreen}/>
+      <Stack.Screen name="People" component={PeopleScreen}/>
+      <Stack.Screen name="Overview" component={Overview}/>
+    </Stack.Navigator>
+  )
+}
 
 export default function App() {
-  const Tab = createBottomTabNavigator();
+
   const color =  '#b700ff';
 
   return (
@@ -58,7 +79,7 @@ export default function App() {
           />
           <Tab.Screen 
           name="Search" 
-          component={Search}
+          component={OccasionStack}
           options={{
             tabBarLabel: 'Occasions',
             tabBarIcon: () => (            
