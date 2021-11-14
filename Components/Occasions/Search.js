@@ -75,7 +75,7 @@ export default function Search({ navigation }) {
         }
         </View>
 
-      <Floating onNavigate={() => navigation.navigate('Title')}/>
+      <Floating onNavigate={() => navigation.navigate('MultiPageForm')}/>
 
     </SafeAreaView>
   );

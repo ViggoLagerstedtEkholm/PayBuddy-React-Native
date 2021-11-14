@@ -1,10 +1,8 @@
 import React from 'react';
 import { 
   StyleSheet, 
-  Button,
-  Text,
-  SafeAreaView,
 } from 'react-native';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -15,24 +13,27 @@ import Home from './Components/Home/Home';
 import Settings from './Components/Settings/Settings';
 import Search from './Components/Occasions/Search';
 import Map from './Components/Maps/Map';
-import TitleScreen from './Components/Occasions/Add/TitleScreen';
-import ItemScreen from './Components/Occasions/Add/ItemScreen';
-import LocationScreen from './Components/Occasions/Add/LocationScreen';
-import PeopleScreen from './Components/Occasions/Add/PeopleScreen';
-import Overview from './Components/Occasions/Add/Overview';
+import MultiPageForm from './Components/Occasions/Add/MultiPageForm';
+import AddItemScreen from './Components/Occasions/Add/AddItemScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function OccasionStack(){
   return(
-    <Stack.Navigator initialRouteName="Occasions">
-      <Stack.Screen name="Occasions" component={Search}/>
-      <Stack.Screen name="Title" component={TitleScreen}/>
-      <Stack.Screen name="Items" component={ItemScreen}/>
-      <Stack.Screen name="Location" component={LocationScreen}/>
-      <Stack.Screen name="People" component={PeopleScreen}/>
-      <Stack.Screen name="Overview" component={Overview}/>
+    <Stack.Navigator initialRouteName="Main"    
+        screenOptions={
+          {
+          tabBarStyle:{
+            backgroundColor: '#1c1c1c',
+          },
+          headerStyle:{
+            backgroundColor: '#1c1c1c',
+          },
+        headerTintColor: '#fff'}}>
+      <Stack.Screen name="Main" component={Search}/>
+      <Stack.Screen name="MultiPageForm" component={MultiPageForm}/>
+      <Stack.Screen name="Add Item" component={AddItemScreen}/>
     </Stack.Navigator>
   )
 }
@@ -107,5 +108,5 @@ const styles = StyleSheet.create({
   topNav: {
     backgroundColor: "#FAFAFA",
     fontSize: 50
-  }
+  },
 });

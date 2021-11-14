@@ -2,20 +2,15 @@ import React from 'react';
 import { 
     View, 
     Text,
-    StyleSheet,
-    TouchableOpacity
+    StyleSheet
 } from 'react-native';
 
-export default function PeopleScreen ({navigation}) {
+export default function PeopleScreen (props) {
+    const {onChange, people} = props;
+
     return (
     <View>
         <Text style={{textAlign: 'center', marginTop: 300}}>People Screen</Text>
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Overview')}
-            >
-            <Text>Next</Text>
-        </TouchableOpacity>
     </View>
     );
 }

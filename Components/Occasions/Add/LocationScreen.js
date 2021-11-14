@@ -1,29 +1,33 @@
 import React from 'react';
 import { 
     View, 
-    Text,
-    TouchableOpacity,
-    StyleSheet
+    StyleSheet,
+    TextInput,
+    Text
 } from 'react-native';
 
-export default function LocationScreen ({navigation}) {
+export default function LocationScreen (props) {
+    const {onChange, location} = props;
+
     return (
-    <View>
-        <Text style={{textAlign: 'center', marginTop: 300}}>Location Screen</Text>
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('People')}
-            >
-            <Text>Next</Text>
-        </TouchableOpacity>
-    </View>
+        <View style={styles.container}>
+                <Text style={styles.text}>TEST</Text>
+            <View>
+                <TextInput
+                    placeholder="Location"
+                    value={location}
+                    onChangeText={item => onChange(item)}/>
+            </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    button: {
-      alignItems: "center",
-      backgroundColor: "#DDDDDD",
-      padding: 10
-    }
-  });
+  container: {
+    height: "100%",
+    justifyContent: "center",
+  },
+  text: {
+    color: "white"
+  }
+});

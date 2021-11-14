@@ -2,24 +2,21 @@ import React from 'react';
 import { 
     View, 
     Text,
-    TouchableOpacity,
     StyleSheet
 } from 'react-native';
 
-export default function Overview ({navigation}) {
+export default function Overview (props) {
+    const {title, items, people, location, date} = props.data;
+
     return (
     <View>
         <Text style={{textAlign: 'center', marginTop: 300}}>Overview Screen</Text>
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-                navigation.popToTop();
-                navigation.navigate('Occasions');
-                
-            }}
-            >
-            <Text>Next</Text>
-        </TouchableOpacity>
+
+        <Text>Title : {title}</Text>
+        <Text>Items : {items ?? "Not set"}</Text>
+        <Text>People : {people ?? "Not set"}</Text>
+        <Text>Location : {location ?? "Not set"}</Text>
+        <Text>Date : {date ?? "Not set"}</Text>
     </View>
     );
 }
