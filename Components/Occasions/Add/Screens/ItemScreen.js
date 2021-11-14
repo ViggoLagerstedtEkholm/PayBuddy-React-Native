@@ -1,30 +1,27 @@
-import React, {useEffect} from "react";
+import React, {useEffect} from 'react';
 
 import {
-    StyleSheet,
-    View,
-    SafeAreaView,
-    Animated,
-    TouchableOpacity,
+  StyleSheet,
+  View,
+  Animated,
+  TouchableOpacity,
+  Text
 } from "react-native";
 
-import {VisibleItem} from '../VisibleItemsList/VisibleItem';
-import { filterItems } from "./Helpers";
-
+import { ItemPreview } from '../../VisibleItemsList/ItemPreview';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons'; 
 
-const ExpiredList = (props) => {
-    useEffect(() => {
-        props.setData(filterItems([
-            {key: 1, title: "ExpiredList 1", value: "ABC", status: 2},
-            {key: 2, title: "ExpiredList 2", value: "ABC", status: 3},
-            {key: 3, title: "ExpiredList 3", value: "ABC", status: 3},
-            {key: 4, title: "ExpiredList 4", value: "ABC", status: 3},
-            {key: 5, title: "ExpiredList 5", value: "ABC", status: 4},
-        ], props.searchPhrase));
-    }, [props.searchPhrase]);
+export default function ItemScreen (props) {
+  const {addItem, removeItem, items, navigation, route, setItems} = props;
+
+  useEffect(() => {
+    setItems(items.map((item, index) => ({ ...item, key : index})));
+    if (route.params?.testItem) {
+      addItem(route.params?.testItem);
+    }
+  }, [route.params?.testItem]);
 
   const closeRow = (rowMap, rowKey) =>{
     if(rowMap[rowKey]){
@@ -34,15 +31,15 @@ const ExpiredList = (props) => {
 
   const deleteRow = (rowMap, rowKey) =>{
     closeRow(rowMap, rowKey);
-    const newData = [... props.data];
-    const prevIndex = props.data.findIndex(item => item.key === rowKey);
+    const newData = [... items];
+    const prevIndex = items.findIndex(item => item.key === rowKey);
     newData.splice(prevIndex, 1);
-    props.setData(newData);
+    removeItem(newData);
   }
 
   const renderItem = (data, rowMap) =>{
     return (
-      <VisibleItem data={data}/>
+      <ItemPreview data={data}/>
     )
   }
 
@@ -56,17 +53,17 @@ const ExpiredList = (props) => {
     } = props;
 
     return(
-      <Animated.View style={[styles.rowBack, {height: rowHeightAnimatedValue}]}>
+      <Animated.View style={[listStyle.rowBack, {height: rowHeightAnimatedValue}]}>
             <TouchableOpacity 
-            style={[styles.backRightBtn, styles.backRightBtnLeft]} 
+            style={[listStyle.backRightBtn, listStyle.backRightBtnLeft]} 
             onPress={onClose}>
-            <View style={styles.trash}>
-              <AntDesign name="close" size={24} color="black" style={styles.trash}/>
+            <View style={listStyle.trash}>
+              <AntDesign name="close" size={24} color="black" style={listStyle.trash}/>
             </View>
           </TouchableOpacity>
-          <Animated.View style={[styles.backRightBtn, styles.backRightBtnRight, {flex: 1, width: rowActionAnimatedValue}]}>
-            <TouchableOpacity style={[styles.backRightBtn, styles.backRightBtnRight]} onPress={onDelete}>
-              <Animated.View style={[styles.trash, {
+          <Animated.View style={[listStyle.backRightBtn, listStyle.backRightBtnRight, {flex: 1, width: rowActionAnimatedValue}]}>
+            <TouchableOpacity style={[listStyle.backRightBtn, listStyle.backRightBtnRight]} onPress={onDelete}>
+              <Animated.View style={[listStyle.trash, {
                               transform: [
                                 {
                                   scale : swipeAnimatedValue.interpolate({
@@ -102,29 +99,43 @@ const ExpiredList = (props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Add Item')}>
+              <Text style={styles.buttonText}>Add Item</Text>
+        </TouchableOpacity>
+      </View>
+      
+      <View style={listStyle.container}>
         <SwipeListView
-            style={styles.swipeList}
-            data={props.data}
-            renderItem={renderItem}
-            renderHiddenItem={renderHiddenItem}
-            rightOpenValue={-150}
-            disableRightSwipe
-            leftActivationValue={100}
-            rightActivationValue={-200}
-            leftActionValue={0}
-            stopRightSwipe={-150}
-      /> 
-    </SafeAreaView>
+              style={listStyle.swipeList}
+              data={items}
+              renderItem={renderItem}
+              renderHiddenItem={renderHiddenItem}
+              keyExtractor={(item, index) => index.toString()}
+              rightOpenValue={-75}
+              disableRightSwipe
+              leftActivationValue={100}
+              rightActivationValue={-200}
+              leftActionValue={0}
+              rightActionValue={-500}
+              stopRightSwipe={-80}
+        />
+      </View>
+    </View>
   );
-};
+}
 
-export default ExpiredList;
 
-const styles = StyleSheet.create({
+const listStyle = StyleSheet.create({
   container: {
     backgroundColor: '#121212',
     width: "100%",
+    height: "64%",
+    marginTop: "20%",
+    marginBottom: "20%",
     paddingStart: 10,
     paddingEnd: 10,
   },
@@ -181,4 +192,38 @@ const styles = StyleSheet.create({
     width: 25,
     marginRight: 7,
   }
+});
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 4,
+    height: "100%",
+    justifyContent: "center",
+  },
+  button: {
+    marginLeft: 3,
+    marginRight: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    width: "100%",
+    backgroundColor: 'white',
+  },
+  buttonText: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'black',
+  },
+  buttonContainer : {
+    width: "100%",
+    display: "flex",
+    marginTop: 25,
+    flexDirection: "row",
+    paddingLeft: 10,
+    paddingRight: 10
+}
 });

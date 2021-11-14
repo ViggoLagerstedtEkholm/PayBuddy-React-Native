@@ -7,7 +7,7 @@ import {
     StyleSheet
 } from "react-native";
 
-import {VisibleItem} from './VisibleItem';
+import {VisibleItem} from '../VisibleItemsList/VisibleItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { AntDesign } from '@expo/vector-icons'; 
 import { filterItems } from "./Helpers";

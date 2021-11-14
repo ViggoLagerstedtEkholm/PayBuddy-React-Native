@@ -15,6 +15,7 @@ export default function Pagination (props) {
     return (
         <View style={styles.footer}>
             <View style={styles.container}>
+                
             {previousStep ?    
             <TouchableOpacity
             style={styles.button}

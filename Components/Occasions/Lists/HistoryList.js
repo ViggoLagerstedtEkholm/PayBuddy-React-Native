@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
 } from "react-native";
 
-import {VisibleItem} from './VisibleItem';
+import {VisibleItem} from '../VisibleItemsList/VisibleItem';
 import { filterItems } from "./Helpers";
 
 import { SwipeListView } from 'react-native-swipe-list-view';

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState, useMemo} from 'react';
+
 import { 
   StyleSheet, 
 } from 'react-native';
@@ -13,28 +14,40 @@ import Home from './Components/Home/Home';
 import Settings from './Components/Settings/Settings';
 import Search from './Components/Occasions/Search';
 import Map from './Components/Maps/Map';
-import MultiPageForm from './Components/Occasions/Add/MultiPageForm';
-import AddItemScreen from './Components/Occasions/Add/AddItemScreen';
+
+import MultiPageForm from './Components/Occasions/Add/MultiStepForm/MultiPageForm';
+import AddItemScreen from './Components/Occasions/Add/Screens/AddItemScreen';
+import AddPersonScreen from './Components/Occasions/Add/Screens/AddPersonScreen';
+import AddPersonToItem from './Components/Occasions/Add/Screens/AddPersonToItem';
+
+import { PeopleContext } from './Components/Context/PeopleContext';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function OccasionStack(){
+  const [people, setPeople] = useState([{name: "title1", phoneNumber: 13}, {name: "title2", phoneNumber: 255}]);
+  const value = useMemo(() => ({people, setPeople}), [people, setPeople]);
+
   return(
-    <Stack.Navigator initialRouteName="Main"    
-        screenOptions={
-          {
-          tabBarStyle:{
-            backgroundColor: '#1c1c1c',
-          },
-          headerStyle:{
-            backgroundColor: '#1c1c1c',
-          },
-        headerTintColor: '#fff'}}>
-      <Stack.Screen name="Main" component={Search}/>
-      <Stack.Screen name="MultiPageForm" component={MultiPageForm}/>
-      <Stack.Screen name="Add Item" component={AddItemScreen}/>
-    </Stack.Navigator>
+    <PeopleContext.Provider value={value}>
+      <Stack.Navigator initialRouteName="Main"    
+          screenOptions={
+            {
+            tabBarStyle:{
+              backgroundColor: '#1c1c1c',
+            },
+            headerStyle:{
+              backgroundColor: '#1c1c1c',
+            },
+          headerTintColor: '#fff'}}>
+        <Stack.Screen name="Main" component={Search}/>
+        <Stack.Screen name="MultiPageForm" component={MultiPageForm}/>
+        <Stack.Screen name="Add Item" component={AddItemScreen}/>
+        <Stack.Screen name="Add Person" component={AddPersonScreen}/>
+        <Stack.Screen name="Add Person To Item" component={AddPersonToItem}/>
+      </Stack.Navigator>
+    </PeopleContext.Provider>
   )
 }
 

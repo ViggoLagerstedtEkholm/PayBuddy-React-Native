@@ -3,9 +3,8 @@ import {
     View, 
     Text,
     StyleSheet,
-    TextInput,
-    TouchableOpacity
-} from 'react-native';
+    TextInput
+  } from 'react-native';
 
 export default function TitleScreen (props) {
     const {onChange, title} = props;

@@ -8,22 +8,20 @@ import {
   Text
 } from "react-native";
 
-import {VisibleItem} from '../Lists/VisibleItem';
-
+import { PeopleItem } from '../../VisibleItemsList/PeopleItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons'; 
 
-export default function ItemScreen (props) {
-  const {addItem, removeItem, items, navigation, route} = props;
+export default function PeopleScreen (props) {
+  const {addItem, removeItem, people, navigation, route, setItems} = props;
 
   useEffect(() => {
-    items.map((item, index) => ({ ...item, key : index}))
-
-    if (route.params?.testItem) {
-      addItem(route.params?.testItem);
+    setItems(people.map((person, index) => ({ ...person, key : index})));
+    if (route.params?.person) {
+      addItem(route.params?.person);
     }
-  }, [route.params?.testItem]);
+  }, [route.params?.person]);
 
   const closeRow = (rowMap, rowKey) =>{
     if(rowMap[rowKey]){
@@ -33,15 +31,15 @@ export default function ItemScreen (props) {
 
   const deleteRow = (rowMap, rowKey) =>{
     closeRow(rowMap, rowKey);
-    const newData = [... items];
-    const prevIndex = items.findIndex(item => item.key === rowKey);
+    const newData = [... people];
+    const prevIndex = people.findIndex(person => person.key === rowKey);
     newData.splice(prevIndex, 1);
     removeItem(newData);
   }
 
   const renderItem = (data, rowMap) =>{
     return (
-      <VisibleItem data={data}/>
+      <PeopleItem data={data}/>
     )
   }
 
@@ -101,28 +99,32 @@ export default function ItemScreen (props) {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Test</Text>
-
-      <TouchableOpacity
-          onPress={() => navigation.navigate('Add Item')}>
-          <Text style={styles.text}>Add Item</Text>
-      </TouchableOpacity>
-
-      <SwipeListView
-            style={styles.swipeList}
-            data={items}
-            renderItem={renderItem}
-            renderHiddenItem={renderHiddenItem}
-            rightOpenValue={-75}
-            disableRightSwipe
-            leftActivationValue={100}
-            rightActivationValue={-200}
-            leftActionValue={0}
-            rightActionValue={-500}
-            stopRightSwipe={-85}
-      />
-  </View>
+    <View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Add Person')}>
+              <Text style={styles.buttonText}>Add Person</Text>
+        </TouchableOpacity>
+      </View>
+      
+      <View style={listStyle.container}>
+        <SwipeListView
+              style={listStyle.swipeList}
+              data={people}
+              renderItem={renderItem}
+              renderHiddenItem={renderHiddenItem}
+              keyExtractor={(item, index) => index.toString()}
+              rightOpenValue={-75}
+              disableRightSwipe
+              leftActivationValue={100}
+              rightActivationValue={-200}
+              leftActionValue={0}
+              rightActionValue={-500}
+              stopRightSwipe={-80}
+        />
+      </View>
+    </View>
   );
 }
 
@@ -131,6 +133,9 @@ const listStyle = StyleSheet.create({
   container: {
     backgroundColor: '#121212',
     width: "100%",
+    height: "64%",
+    marginTop: "20%",
+    marginBottom: "20%",
     paddingStart: 10,
     paddingEnd: 10,
   },
@@ -191,10 +196,34 @@ const listStyle = StyleSheet.create({
 
 const styles = StyleSheet.create({
   container: {
+    flex: 4,
     height: "100%",
     justifyContent: "center",
   },
-  text: {
-    color: "white"
-  }
+  button: {
+    marginLeft: 3,
+    marginRight: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    width: "100%",
+    backgroundColor: 'white',
+  },
+  buttonText: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'black',
+  },
+  buttonContainer : {
+    width: "100%",
+    display: "flex",
+    marginTop: 25,
+    flexDirection: "row",
+    paddingLeft: 10,
+    paddingRight: 10
+}
 });

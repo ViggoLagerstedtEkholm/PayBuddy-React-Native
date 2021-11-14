@@ -2,8 +2,7 @@ import React from 'react';
 import { 
     View, 
     Text,
-    StyleSheet,
-    Dimensions
+    StyleSheet
 } from 'react-native';
 
 export default function TopPaginationInfo (props) {

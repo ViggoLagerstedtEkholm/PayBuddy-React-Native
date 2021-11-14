@@ -2,9 +2,7 @@ import React from "react";
 import {
     StyleSheet,
     View,
-    TextInput,
-    Button,
-    Keyboard
+    TextInput
 } from "react-native";
 
 import { Feather, Entypo } from "@expo/vector-icons";
