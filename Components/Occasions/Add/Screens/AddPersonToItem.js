@@ -25,13 +25,13 @@ export default function AddPersonToItem ({navigation}) {
     const {people} = useContext(PeopleContext);
 
     const renderItem = ({ item }) => {
-        const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
-        const color = item.id === selectedId ? 'white' : 'black';
+        const backgroundColor = item.key === selectedId ? "#6e3b6e" : "#f9c2ff";
+        const color = item.key === selectedId ? 'white' : 'black';
 
         return (
           <Item
             item={item}
-            onPress={() => navigation.navigate("Add Item", item)}
+            onPress={() => navigation.navigate("Add Item", item.key)}
             backgroundColor={{ backgroundColor }}
             textColor={{ color }}
           />
@@ -43,7 +43,7 @@ export default function AddPersonToItem ({navigation}) {
             <FlatList
             data={people}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.key}
             extraData={selectedId}
             />
       </SafeAreaView>

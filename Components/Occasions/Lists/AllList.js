@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 
 import {
     SafeAreaView,
@@ -11,48 +11,23 @@ import {VisibleItem} from '../VisibleItemsList/VisibleItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { AntDesign } from '@expo/vector-icons'; 
 import { filterItems } from "./Helpers";
+import { GetAllOccasions, MakeOccasionExpired } from "../../SQL/DBHelper";
 
 const AllList = (props) => {
+  const [allOccasions, setAllOccasions] = useState([]);
 
-    useEffect(() => {
-        props.setData(filterItems([
-            {key: 1, title: "AllList 1", value: "ABC", status: 2},
-            {key: 2, title: "AllList 2", value: "ABC", status: 3},
-            {key: 3, title: "AllList 3", value: "ABC", status: 3},
-            {key: 4, title: "AllList 4", value: "ABC", status: 3},
-            {key: 5, title: "AllList 5", value: "ABC", status: 4},
-            {key: 6, title: "AllList 1", value: "ABC", status: 2},
-            {key: 7, title: "AllList 2", value: "ABC", status: 3},
-            {key: 8, title: "AllList 3", value: "ABC", status: 3},
-            {key: 9, title: "AllList 4", value: "ABC", status: 3},
-            {key: 10, title: "AllList 5", value: "ABC", status: 4},
-            {key: 11, title: "AllList 1", value: "ABC", status: 2},
-            {key: 12, title: "AllList 2", value: "ABC", status: 3},
-            {key: 13, title: "AllList 3", value: "ABC", status: 3},
-            {key: 14, title: "AllList 4", value: "ABC", status: 3},
-            {key: 15, title: "AllList 5", value: "ABC", status: 4},
-            {key: 16, title: "AllList 1", value: "ABC", status: 2},
-            {key: 17, title: "AllList 2", value: "ABC", status: 3},
-            {key: 18, title: "AllList 3", value: "ABC", status: 3},
-            {key: 19, title: "AllList 4", value: "ABC", status: 3},
-            {key: 20, title: "AllList 5", value: "ABC", status: 4},
-            {key: 21, title: "AllList 1", value: "ABC", status: 2},
-            {key: 22, title: "AllList 2", value: "ABC", status: 3},
-            {key: 23, title: "AllList 3", value: "ABC", status: 3},
-            {key: 24, title: "AllList 4", value: "ABC", status: 3},
-            {key: 25, title: "AllList 5", value: "ABC", status: 4},
-        ], props.searchPhrase));
-    }, [props.searchPhrase]);  
-
-  const deleteRow = (rowMap, rowKey) =>{
-    deleteRowFromList(rowKey);
-  }
+  useEffect(() => {
+      GetAllOccasions().then((response) => {
+        setAllOccasions(filterItems(response, props.searchPhrase));
+      });
+  }, [props.searchPhrase]); 
 
   function deleteRowFromList(rowKey){
-    const newData = [... props.data];
-    const prevIndex = props.data.findIndex(item => item.key === rowKey);
+    MakeOccasionExpired(rowKey);
+    const newData = [... allOccasions];
+    const prevIndex = allOccasions.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
-    props.setData(newData);
+    setAllOccasions(newData);
   }
 
   const HiddenItemWithActions = props =>{
@@ -96,7 +71,7 @@ const AllList = (props) => {
         rowMap={rowMap}
         rowActionAnimatedValue={rowActionAnimatedValue}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
-        onDelete={() => deleteRow(rowMap, data.item.key)}
+        onDelete={() => deleteRowFromList(data.item.ID)}
       />
     )
   }
@@ -111,16 +86,16 @@ const AllList = (props) => {
     <SafeAreaView style={styles.container}>
         <SwipeListView
             style={styles.swipeList}
-            data={props.data}
+            data={allOccasions}
             renderItem={renderItem}
+            keyExtractor={(item) => item.ID}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-75}
             disableRightSwipe
             leftActivationValue={100}
             rightActivationValue={-200}
             leftActionValue={0}
-            rightActionValue={-500}
-            stopRightSwipe={-85}
+            stopRightSwipe={-75}
       />
     </SafeAreaView>
   );

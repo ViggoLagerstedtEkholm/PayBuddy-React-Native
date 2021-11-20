@@ -1,4 +1,6 @@
 import React, {useState, useContext} from 'react';
+import uuid from 'react-native-uuid';
+
 import { 
     View, 
     Text,
@@ -7,20 +9,31 @@ import {
     TouchableOpacity,
     Alert
 } from 'react-native';
+import { PeopleContext } from '../../../Context/PeopleContext';
+import { ItemsContext } from '../../../Context/ItemsContext';
 
 export default function AddItemScreen ({navigation, route}) {
     const [title, setTitle] = useState();
     const [cost, setCost] = useState();
     const [quantity, setQuantity] = useState();
 
-    if(route.params){
-      const {name, phoneNumber} = route.params;
-    }
+    const {setItems} = useContext(ItemsContext);
+    const {people} = useContext(PeopleContext);
+    const personID = route.params;
+    const person = people.find(x => x.key === personID);
 
     const validate = () =>{
       if(title && cost && quantity){
         if(isNumber(cost) && isNumber(quantity)){
-          navigation.navigate({name: 'MultiPageForm', params : {testItem : {title: title, cost: cost, quantity : quantity}}});
+          setItems(oldArray => [...oldArray, 
+            {
+              Title: title, 
+              Cost: cost, 
+              Quantity : quantity, 
+              Person: person, 
+              key : uuid.v4()
+          }])
+          navigation.navigate({name: 'MultiPageForm'});
         }else{
           Alert.alert('Cost and quantity needs to be numbers');
         }
@@ -48,10 +61,10 @@ export default function AddItemScreen ({navigation, route}) {
 
             <View style={styles.addedPersonBox}>
               <Text style={styles.addedPersonTextInfo}>Person</Text>
-              {route.params ?          
+              {person ?          
               <View>
-                  <Text style={styles.addedPersonText}>{route.params.name}</Text>
-                  <Text style={styles.addedPersonText}>{route.params.phoneNumber}</Text>
+                  <Text style={styles.addedPersonText}>{person.name}</Text>
+                  <Text style={styles.addedPersonText}>{person.phoneNumber}</Text>
               </View> : 
                 <Text style={styles.addedPersonTextInfo}>Not set</Text>
               }

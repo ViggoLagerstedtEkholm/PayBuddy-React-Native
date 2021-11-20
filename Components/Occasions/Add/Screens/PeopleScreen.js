@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 
 import {
   StyleSheet,
@@ -12,17 +12,13 @@ import { PeopleItem } from '../../VisibleItemsList/PeopleItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons'; 
+import { PeopleContext } from '../../../Context/PeopleContext';
 
 export default function PeopleScreen (props) {
-  const {addItem, removeItem, people, navigation, route, setItems} = props;
+  const {navigation} = props;
 
-  useEffect(() => {
-    setItems(people.map((person, index) => ({ ...person, key : index})));
-    if (route.params?.person) {
-      addItem(route.params?.person);
-    }
-  }, [route.params?.person]);
-
+  const {people, setPeople} = useContext(PeopleContext);
+  
   const closeRow = (rowMap, rowKey) =>{
     if(rowMap[rowKey]){
       rowMap[rowKey].closeRow();
@@ -34,7 +30,7 @@ export default function PeopleScreen (props) {
     const newData = [... people];
     const prevIndex = people.findIndex(person => person.key === rowKey);
     newData.splice(prevIndex, 1);
-    removeItem(newData);
+    setPeople(newData);
   }
 
   const renderItem = (data, rowMap) =>{
@@ -114,7 +110,7 @@ export default function PeopleScreen (props) {
               data={people}
               renderItem={renderItem}
               renderHiddenItem={renderHiddenItem}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(item, index) => item.key}
               rightOpenValue={-75}
               disableRightSwipe
               leftActivationValue={100}

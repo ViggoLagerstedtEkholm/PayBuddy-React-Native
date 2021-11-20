@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 
 import {
   StyleSheet,
@@ -12,16 +12,12 @@ import { ItemPreview } from '../../VisibleItemsList/ItemPreview';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons'; 
+import { ItemsContext } from '../../../Context/ItemsContext';
 
 export default function ItemScreen (props) {
-  const {addItem, removeItem, items, navigation, route, setItems} = props;
+  const {navigation} = props;
 
-  useEffect(() => {
-    setItems(items.map((item, index) => ({ ...item, key : index})));
-    if (route.params?.testItem) {
-      addItem(route.params?.testItem);
-    }
-  }, [route.params?.testItem]);
+  const {items, setItems} = useContext(ItemsContext);
 
   const closeRow = (rowMap, rowKey) =>{
     if(rowMap[rowKey]){
@@ -34,7 +30,7 @@ export default function ItemScreen (props) {
     const newData = [... items];
     const prevIndex = items.findIndex(item => item.key === rowKey);
     newData.splice(prevIndex, 1);
-    removeItem(newData);
+    setItems(newData);
   }
 
   const renderItem = (data, rowMap) =>{
@@ -114,7 +110,7 @@ export default function ItemScreen (props) {
               data={items}
               renderItem={renderItem}
               renderHiddenItem={renderHiddenItem}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(item, index) => item.key}
               rightOpenValue={-75}
               disableRightSwipe
               leftActivationValue={100}

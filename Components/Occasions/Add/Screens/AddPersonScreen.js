@@ -1,4 +1,6 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
+import uuid from 'react-native-uuid';
+
 import { 
     View, 
     Text,
@@ -8,14 +10,21 @@ import {
     Alert
 } from 'react-native';
 
+import { PeopleContext } from '../../../Context/PeopleContext';
+
 export default function AddPersonScreen ({navigation}) {
-    const [name, setName] = useState();
+    const [firstName, setFirstName] = useState();
+    const [lastName, setLastName] = useState();
+
     const [phoneNumber, setPhoneNumber] = useState();
+
+    const {setPeople} = useContext(PeopleContext);
 
     const validate = () =>{
       if(name && phoneNumber){
         if(isNumber(phoneNumber)){
-          navigation.navigate({name: 'MultiPageForm', params : {person : {name: name, phoneNumber: phoneNumber}}});
+          setPeople(oldArray => [...oldArray, {firstName: firstName, lastName : lastName, phoneNumber: phoneNumber, key : uuid.v4()}]);
+          navigation.navigate({name: 'MultiPageForm'});
         }else{
           Alert.alert('Invalid phone number');
         }
@@ -31,13 +40,22 @@ export default function AddPersonScreen ({navigation}) {
     return (
         <View style={styles.container}>
           <View style={styles.textBox}>
-            <Text style={styles.text}>Enter person name</Text>
+            
+            <Text style={styles.text}>Enter first name</Text>
 
             <TextInput
             style={styles.searchBar}
-            placeholder="Name"
-            value={name}
-            onChangeText={name => setName(name)}/>
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={FirstName => setFirstName(FirstName)}/>
+
+            <Text style={styles.text}>Enter last name</Text>
+
+            <TextInput
+            style={styles.searchBar}
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={LastName => setLastName(LastName)}/>
 
             <Text style={styles.text}>Enter phone number</Text>
 

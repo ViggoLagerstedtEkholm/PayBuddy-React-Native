@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 
 import { 
   StyleSheet, 
@@ -21,37 +21,51 @@ import AddPersonScreen from './Components/Occasions/Add/Screens/AddPersonScreen'
 import AddPersonToItem from './Components/Occasions/Add/Screens/AddPersonToItem';
 
 import { PeopleContext } from './Components/Context/PeopleContext';
+import { ItemsContext } from './Components/Context/ItemsContext';
+import { configureTables, dropTables, getAll } from './Components/SQL/DBHelper';
+import { OccasionInspect } from './Components/Occasions/Add/Screens/OccasionInspect';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function OccasionStack(){
-  const [people, setPeople] = useState([{name: "title1", phoneNumber: 13}, {name: "title2", phoneNumber: 255}]);
-  const value = useMemo(() => ({people, setPeople}), [people, setPeople]);
+  const [people, setPeople] = useState([{firstName : "firstName1", lastName : "lastName1", phoneNumber: "number1", key: 1}]);
+  const peopleItems = useMemo(() => ({people, setPeople}), [people, setPeople]);
+
+  const [items, setItems] = useState([]);
+  const occasionItems = useMemo(() => ({items, setItems}), [items, setItems]);
 
   return(
-    <PeopleContext.Provider value={value}>
-      <Stack.Navigator initialRouteName="Main"    
-          screenOptions={
-            {
-            tabBarStyle:{
-              backgroundColor: '#1c1c1c',
-            },
-            headerStyle:{
-              backgroundColor: '#1c1c1c',
-            },
-          headerTintColor: '#fff'}}>
-        <Stack.Screen name="Main" component={Search}/>
-        <Stack.Screen name="MultiPageForm" component={MultiPageForm}/>
-        <Stack.Screen name="Add Item" component={AddItemScreen}/>
-        <Stack.Screen name="Add Person" component={AddPersonScreen}/>
-        <Stack.Screen name="Add Person To Item" component={AddPersonToItem}/>
-      </Stack.Navigator>
+    <PeopleContext.Provider value={peopleItems}>
+      <ItemsContext.Provider value={occasionItems}>
+        <Stack.Navigator initialRouteName="Main"    
+            screenOptions={
+              {
+              tabBarStyle:{
+                backgroundColor: '#1c1c1c',
+              },
+              headerStyle:{
+                backgroundColor: '#1c1c1c',
+              },
+            headerTintColor: '#fff'}}>
+          <Stack.Screen name="Main" component={Search}/>
+          <Stack.Screen name="MultiPageForm" component={MultiPageForm}/>
+          <Stack.Screen name="Add Item" component={AddItemScreen}/>
+          <Stack.Screen name="Add Person" component={AddPersonScreen}/>
+          <Stack.Screen name="Add Person To Item" component={AddPersonToItem}/>
+        </Stack.Navigator>
+      </ItemsContext.Provider>
     </PeopleContext.Provider>
   )
 }
 
 export default function App() {
+
+  useEffect(() => {
+    //dropTables();
+    configureTables();
+    getAll();
+  }, []);
 
   const color =  '#b700ff';
 

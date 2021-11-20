@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useContext, useState} from 'react';
 
 import LocationScreen from '../Screens/LocationScreen';
 import PeopleScreen from '../Screens/PeopleScreen';
@@ -8,21 +8,19 @@ import TitleScreen from '../Screens/TitleScreen';
 import DateScreen from '../Screens/DateScreen';
 
 import Screen from './Screen';
+import { ItemsContext } from '../../../Context/ItemsContext';
 import { PeopleContext } from '../../../Context/PeopleContext';
 
 export default function MultiPageForm ({ navigation, route }) {
     const [step, setStep] = useState(1);
-    const [title, setTitle] = useState();
-    const [items, setItems] = useState([{title: "title1", cost: 13, quantity: 12}, {title: "title2", cost: 13, quantity: 12}]);
+    const [title, setTitle] = useState("");
     const [date, setDate] = useState(new Date());
-    const [location, setLocation] = useState();
-    const {people, setPeople} = useContext(PeopleContext);
+    const [location, setLocation] = useState(null);
+
+    const {items} = useContext(ItemsContext);
+    const {people} = useContext(PeopleContext);
 
     const totalSteps = 6;
-
-    const publish = () =>{
-        //Save to db...
-    }
 
     const nextStep = () =>{
         setStep(step + 1);
@@ -59,14 +57,7 @@ export default function MultiPageForm ({ navigation, route }) {
                 step={step}  
                 nextStep={nextStep}
                 previousStep={previousStep}
-                screen={<PeopleScreen 
-                addItem={(person) => setPeople([...people, person])}
-                removeItem={(items) => setPeople(items)}
-                navigation={navigation}
-                setItems={setPeople} 
-                route={route}
-                onChange={(value) => setPeople(value)}
-                people={people}/>}/>)
+                screen={<PeopleScreen navigation={navigation}/>}/>)
         case 4:
             return( 
                 <Screen 
@@ -74,14 +65,7 @@ export default function MultiPageForm ({ navigation, route }) {
                 step={step}  
                 nextStep={nextStep}
                 previousStep={previousStep}
-                screen={<ItemScreen 
-                addItem={(item) => setItems([...items, item])}
-                removeItem={(items) => setItems(items)}
-                navigation={navigation} 
-                setItems={setItems}
-                route={route}
-                items={items}
-                />}/>
+                screen={<ItemScreen navigation={navigation}/>}/>
                 )
 
         case 5:
@@ -92,18 +76,24 @@ export default function MultiPageForm ({ navigation, route }) {
                 nextStep={nextStep}
                 previousStep={previousStep}
                 screen={<LocationScreen 
-                onChange={(value) => setLocation(...value)} 
+                setLocation={(value) => setLocation(value)} 
                 location={location}/>}/>
              )
         case 6:
+            if((items.length < 1 || people.length < 1) || !(location) || title === ""){
+                setStep(step - 1);
+                alert('Fill in every step.');
+                return; 
+            }
+
             return( 
                 <Screen 
                 totalSteps={totalSteps}
                 step={step}  
                 previousStep={previousStep}
-                screen={<OverviewScreen 
-                onChange={() => publish()}
-                data={{title: title, items : items, people : people, location : location, date: date}}/>}/>)
+                screen={<OverviewScreen
+                navigation={navigation} 
+                data={{title: title, location : location, date: date}}/>}/>)
         default:
             return null
     }

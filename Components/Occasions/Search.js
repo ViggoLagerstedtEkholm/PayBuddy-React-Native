@@ -19,7 +19,36 @@ export default function Search({ navigation }) {
   const [searchPhrase, setSearchPhrase] = useState("");
   const [filterOption, setFilterOption] = useState(2);
   const [clicked, setClicked] = useState(false);
-  const [data, setData] = useState([]);
+
+  function filterOptionSelected(){
+    switch(filterOption){
+      case 1:
+        return(
+          <AllList
+            searchPhrase={searchPhrase}
+          />
+        );
+      case 2:
+        return(
+          <PendingList
+            searchPhrase={searchPhrase}
+          />
+        );
+      case 3:
+        return (
+          <HistoryList
+            searchPhrase={searchPhrase}
+          />
+        )
+      case 4:
+        return(
+          <ExpiredList
+            searchPhrase={searchPhrase}
+          />
+        )
+      default:
+    }
+  }
 
  return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'powderblue' }}>
@@ -40,39 +69,7 @@ export default function Search({ navigation }) {
         </View>
 
         <View style={{ flex: 7, backgroundColor: '#121212' }}> 
-        {filterOption === 1?  
-          <AllList
-              searchPhrase={searchPhrase}
-              filterOption={filterOption}
-              data={data}
-              setData={setData}
-              setClicked={setClicked}
-            />
-          : filterOption === 2 ? 
-          <PendingList
-              searchPhrase={searchPhrase}
-              filterOption={filterOption}
-              data={data}
-              setData={setData}
-              setClicked={setClicked}
-            /> :
-            filterOption === 3 ? 
-            <HistoryList
-              searchPhrase={searchPhrase}
-              filterOption={filterOption}
-              data={data}
-              setData={setData}
-              setClicked={setClicked}
-            /> :
-            filterOption === 4 ? 
-            <ExpiredList
-              searchPhrase={searchPhrase}
-              filterOption={filterOption}
-              data={data}
-              setData={setData}
-              setClicked={setClicked}
-            /> : null
-        }
+          {filterOptionSelected()}
         </View>
 
       <Floating onNavigate={() => navigation.navigate('MultiPageForm')}/>

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 
 import {
     StyleSheet,
@@ -14,30 +14,29 @@ import { filterItems } from "./Helpers";
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons'; 
+import { DeleteOccasion, GetExpiredOccasions } from "../../SQL/DBHelper";
 
 const ExpiredList = (props) => {
-    useEffect(() => {
-        props.setData(filterItems([
-            {key: 1, title: "ExpiredList 1", value: "ABC", status: 2},
-            {key: 2, title: "ExpiredList 2", value: "ABC", status: 3},
-            {key: 3, title: "ExpiredList 3", value: "ABC", status: 3},
-            {key: 4, title: "ExpiredList 4", value: "ABC", status: 3},
-            {key: 5, title: "ExpiredList 5", value: "ABC", status: 4},
-        ], props.searchPhrase));
-    }, [props.searchPhrase]);
+  const [expiredOccasions, setExpiredOccasions] = useState([]);
+
+  useEffect(() => {
+      GetExpiredOccasions().then((response) => {
+        setExpiredOccasions(filterItems(response, props.searchPhrase));
+      });
+  }, [props.searchPhrase]);
 
   const closeRow = (rowMap, rowKey) =>{
     if(rowMap[rowKey]){
       rowMap[rowKey].closeRow();
-    }
+    }  
   }
 
   const deleteRow = (rowMap, rowKey) =>{
-    closeRow(rowMap, rowKey);
-    const newData = [... props.data];
-    const prevIndex = props.data.findIndex(item => item.key === rowKey);
+    const newData = [... expiredOccasions];
+    const prevIndex = expiredOccasions.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
-    props.setData(newData);
+    setExpiredOccasions(newData);
+    DeleteOccasion(rowKey);
   }
 
   const renderItem = (data, rowMap) =>{
@@ -95,8 +94,8 @@ const ExpiredList = (props) => {
         rowMap={rowMap}
         rowActionAnimatedValue={rowActionAnimatedValue}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
-        onClose={() => closeRow(rowMap, data.item.key)}
-        onDelete={() => deleteRow(rowMap, data.item.key)}
+        onClose={() => closeRow(rowMap, data.item.ID)}
+        onDelete={() => deleteRow(rowMap, data.item.ID)}
       />
     )
   }
@@ -105,8 +104,9 @@ const ExpiredList = (props) => {
     <SafeAreaView style={styles.container}>
         <SwipeListView
             style={styles.swipeList}
-            data={props.data}
+            data={expiredOccasions}
             renderItem={renderItem}
+            keyExtractor={(item) => item.ID}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-150}
             disableRightSwipe

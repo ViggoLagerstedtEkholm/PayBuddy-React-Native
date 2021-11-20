@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 
 import {
     StyleSheet,
@@ -13,30 +13,28 @@ import { filterItems } from "./Helpers";
 
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
+import { DeleteOccasion, GetHistoryOccasions, MakeHistoryToPending } from "../../SQL/DBHelper";
 
 const HistoryList = (props) => {
-    useEffect(() => {
-        props.setData(filterItems([
-            {key: 1, title: "HistoryList 1", value: "ABC", status: 2},
-            {key: 2, title: "HistoryLister 2", value: "ABC", status: 3},
-            {key: 3, title: "HistoryList 3", value: "ABC", status: 3},
-            {key: 4, title: "HistoryList 4", value: "ABC", status: 3},
-            {key: 5, title: "HistoryList 5", value: "ABC", status: 4},
-        ], props.searchPhrase));
-    }, [props.searchPhrase]);
+  const [historyOccasions, setHistoryOccasions] = useState([]);
+
+  useEffect(() => {
+      GetHistoryOccasions().then((response) => {
+        setHistoryOccasions(filterItems(response, props.searchPhrase));
+      });
+  }, [props.searchPhrase]);
 
   const closeRow = (rowMap, rowKey) =>{
-    if(rowMap[rowKey]){
-      rowMap[rowKey].closeRow();
-    }
+    MakeHistoryToPending(rowKey);
+    deleteRow(rowMap, rowKey);
   }
 
   const deleteRow = (rowMap, rowKey) =>{
-    closeRow(rowMap, rowKey);
-    const newData = [... props.data];
-    const prevIndex = props.data.findIndex(item => item.key === rowKey);
+    const newData = [... historyOccasions];
+    const prevIndex = historyOccasions.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
-    props.setData(newData);
+    setHistoryOccasions(newData);
+    DeleteOccasion(rowKey);
   }
 
   const onLeftAction = rowKey => {
@@ -99,8 +97,8 @@ const HistoryList = (props) => {
         rowMap={rowMap}
         rowActionAnimatedValue={rowActionAnimatedValue}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
-        onClose={() => closeRow(rowMap, data.item.key)}
-        onDelete={() => deleteRow(rowMap, data.item.key)}
+        onClose={() => closeRow(rowMap, data.item.ID)}
+        onDelete={() => deleteRow(rowMap, data.item.ID)}
       />
     )
   }
@@ -109,8 +107,9 @@ const HistoryList = (props) => {
     <SafeAreaView style={styles.container}>
         <SwipeListView
             style={styles.swipeList}
-            data={props.data}
+            data={historyOccasions}
             renderItem={renderItem}
+            keyExtractor={(item) => item.ID}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-150}
             leftOpenValue={90}

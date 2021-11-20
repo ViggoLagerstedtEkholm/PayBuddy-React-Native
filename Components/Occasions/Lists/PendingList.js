@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 
 import {
     View,
@@ -14,30 +14,28 @@ import { filterItems } from "./Helpers";
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { FontAwesome } from '@expo/vector-icons'; 
+import { DeleteOccasion, GetActiveOccasions, MakeActiveToHistory } from "../../SQL/DBHelper";
 
 const PendingList = (props) => {
-    useEffect(() => {
-        props.setData(filterItems([
-            {key: 1, title: "PendingList 1", value: "ABC", status: 2},
-            {key: 2, title: "PendingList 2", value: "ABC", status: 3},
-            {key: 3, title: "PendingList 3", value: "ABC", status: 3},
-            {key: 4, title: "PendingList 4", value: "ABC", status: 3},
-            {key: 5, title: "PendingList 5", value: "ABC", status: 4},
-        ], props.searchPhrase));
-    }, [props.searchPhrase]);
+  const [activeOccasions, setActiveOccasions] = useState([]);
 
-  const closeRow = (rowMap, rowKey) =>{
-    if(rowMap[rowKey]){
-      rowMap[rowKey].closeRow();
-    }
+  useEffect(() => {
+      GetActiveOccasions().then((response) => {
+        setActiveOccasions(filterItems(response, props.searchPhrase));
+      });
+  }, [props.searchPhrase]);
+
+  const makeHistory = (rowMap, rowKey) =>{
+    MakeActiveToHistory(rowKey);
+    deleteRow(rowMap, rowKey);
   }
 
   const deleteRow = (rowMap, rowKey) =>{
-    closeRow(rowMap, rowKey);
-    const newData = [... props.data];
-    const prevIndex = props.data.findIndex(item => item.key === rowKey);
+    const newData = [... activeOccasions];
+    const prevIndex = activeOccasions.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
-    props.setData(newData);
+    setActiveOccasions(newData);
+    DeleteOccasion(rowKey);
   }
 
   const renderItem = (data, rowMap) =>{
@@ -94,8 +92,8 @@ const PendingList = (props) => {
         rowMap={rowMap}
         rowActionAnimatedValue={rowActionAnimatedValue}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
-        onClose={() => closeRow(rowMap, data.item.key)}
-        onDelete={() => deleteRow(rowMap, data.item.key)}
+        onClose={() => makeHistory(rowMap, data.item.ID)}
+        onDelete={() => deleteRow(rowMap, data.item.ID)}
       />
     )
   }
@@ -104,8 +102,9 @@ const PendingList = (props) => {
     <SafeAreaView style={styles.container}>
         <SwipeListView
             style={styles.swipeList}
-            data={props.data}
+            data={activeOccasions}
             renderItem={renderItem}
+            keyExtractor={(item) => item.ID}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-150}
             disableRightSwipe

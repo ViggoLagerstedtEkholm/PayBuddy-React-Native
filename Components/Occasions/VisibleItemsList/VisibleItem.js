@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 import {
     View,
@@ -7,14 +7,15 @@ import {
     StyleSheet
 } from "react-native";
 
-  export const VisibleItem = props =>{
+export const VisibleItem = props =>{
   const {data} = props;
 
   return (
     <TouchableHighlight style={styles.rowFrontVisible}>
         <View>
-          <Text style={styles.title} numberOfLines={1}>{data.item.title}</Text>
-          <Text style={styles.details} numberOfLines={1}>{data.item.value}</Text>
+          <Text style={styles.title} numberOfLines={1}>{data.item.Title}</Text>
+          <Text style={styles.details} numberOfLines={1}>{data.item.Description}</Text>
+          <Text style={styles.details} numberOfLines={1}>Expiry : {data.item.Expiry}</Text>
         </View>
     </TouchableHighlight>
   )
@@ -31,13 +32,13 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
-    fontSize: 14,
+    fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#666',
+    color: '#c6a1e7',
   },
   details: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#999',
   },
 });
