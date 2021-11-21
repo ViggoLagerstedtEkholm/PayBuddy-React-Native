@@ -2,7 +2,8 @@ import React from "react";
 import {
     StyleSheet,
     View,
-    TextInput
+    TextInput,
+    Keyboard
 } from "react-native";
 
 import { Feather, Entypo } from "@expo/vector-icons";
@@ -36,6 +37,7 @@ const Filtering = (props) => {
             <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
                 props.setSearchPhrase("");
                 props.setClicked(false);
+                Keyboard.dismiss()
             }}/>
           )}
           
@@ -49,11 +51,10 @@ const Filtering = (props) => {
   // styles
   const styles = StyleSheet.create({
     container: {
-      margin: 15,
+      margin: 10,
       justifyContent: "flex-start",
       alignItems: "center",
       flexDirection: "column",
-      width: "90%",
     },
     searchBar__unclicked: {
       padding: 10,
@@ -66,7 +67,6 @@ const Filtering = (props) => {
     searchBar__clicked: {
       padding: 10,
       flexDirection: "row",
-      width: "80%",
       backgroundColor: "#d9dbda",
       borderRadius: 15,
       alignItems: "center",

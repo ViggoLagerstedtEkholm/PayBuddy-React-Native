@@ -45,12 +45,13 @@ export default function Overview (props) {
             }
         }
         
-        insertOccasion(occasion);
-
-        alert('Published!');
-        //setItems([]);
-        //setPeople([]);
-        //goBack();
+        insertOccasion(occasion).then(() => {
+            setItems([]);
+            setPeople([]);
+            goBack();
+        }).catch(error =>{
+            alert('Error occured!');
+        });
     }
 
     return (

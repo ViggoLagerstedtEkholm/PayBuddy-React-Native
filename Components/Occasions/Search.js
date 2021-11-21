@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   StyleSheet, 
   SafeAreaView,
@@ -26,24 +26,28 @@ export default function Search({ navigation }) {
         return(
           <AllList
             searchPhrase={searchPhrase}
+            navigation={navigation}
           />
         );
       case 2:
         return(
           <PendingList
             searchPhrase={searchPhrase}
+            navigation={navigation}
           />
         );
       case 3:
         return (
           <HistoryList
             searchPhrase={searchPhrase}
+            navigation={navigation}
           />
         )
       case 4:
         return(
           <ExpiredList
             searchPhrase={searchPhrase}
+            navigation={navigation}
           />
         )
       default:

@@ -11,7 +11,7 @@ import Screen from './Screen';
 import { ItemsContext } from '../../../Context/ItemsContext';
 import { PeopleContext } from '../../../Context/PeopleContext';
 
-export default function MultiPageForm ({ navigation, route }) {
+export default function MultiPageForm ({ navigation}) {
     const [step, setStep] = useState(1);
     const [title, setTitle] = useState("");
     const [date, setDate] = useState(new Date());
@@ -80,7 +80,7 @@ export default function MultiPageForm ({ navigation, route }) {
                 location={location}/>}/>
              )
         case 6:
-            if((items.length < 1 || people.length < 1) || !(location) || title === ""){
+            if(!(location) || title === ""){
                 setStep(step - 1);
                 alert('Fill in every step.');
                 return; 

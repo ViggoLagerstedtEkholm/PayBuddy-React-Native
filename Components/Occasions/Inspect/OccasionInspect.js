@@ -7,41 +7,39 @@ import {
     TouchableOpacity,
     StyleSheet,
     TouchableHighlight,
-    Text
+    Text,
+    Modal
 } from "react-native";
-
-//import {VisibleItem} from '../VisibleItemsList/VisibleItem';
-import { filterItems } from "./Helpers";
 
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { FontAwesome } from '@expo/vector-icons'; 
-import { DeleteOccasion, GetActiveOccasions, MakeActiveToHistory } from "../../SQL/DBHelper";
-import OccasionInspect from "../Inspect/OccasionInspect";
+import { DeleteOccasion, GetItemsByID, GetItemsFromOccasion, GetLocationByID } from "../../SQL/DBHelper";
+import LocationOnMap from "./LocationOnMap";
 
-const PendingList = (props) => {
-  const [activeOccasions, setActiveOccasions] = useState([]);
-  const [modalIsVisible, setModalIsVisible] = useState(false);
-  const [inspectID, setInspectID] = useState(null);
+const OccasionInspect = (props) => {
+  const [items, setItems] = useState([]);
+  const [location, setLocation] = useState(null);
+  const [visibleMap, setVisibleMap] = useState(false);
+  const {setModalIsVisible, modalIsVisible, inspectID} = props;
 
   useEffect(() => {
-    //If the navigation focus changes that means we added a new occasion!
-    props.navigation.addListener('focus', () => {
-        GetActive();
+    GetItemsByID(inspectID).then((response) =>{
+        setItems(response);
+    }).catch((error)=>{
+        console.log(error);
     });
 
-    GetActive();
-  }, [props.searchPhrase]);
-
-  const GetActive = () =>{
-    GetActiveOccasions().then((response) => {
-      setActiveOccasions(filterItems(response, props.searchPhrase));
+    GetLocationByID(inspectID).then((response) => {
+        setLocation(response);
+        console.log("Location : " , response);
+    }).catch(error =>{
+        console.log(error);
     });
-  }
+  },[inspectID])
 
-  const makeHistory = (rowKey) =>{
-    deleteRowFromList(rowKey);
-    MakeActiveToHistory(rowKey);
+  const edit = (rowKey) =>{
+    console.log("ID: " , rowKey);
   }
 
   const deleteRow = (rowKey) =>{
@@ -52,43 +50,33 @@ const PendingList = (props) => {
   const onClicked = (rowKey) =>{
     setInspectID(rowKey);
     setModalIsVisible(true);
-    console.log(rowKey);
   }
 
   const deleteRowFromList = (rowKey) =>{
-    const newData = [... activeOccasions];
-    const prevIndex = activeOccasions.findIndex(item => item.ID === rowKey);
+    const newData = [... items];
+    const prevIndex = items.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
-    setActiveOccasions(newData);
+    setItems(newData);
   }
 
   const VisibleItemWithActions = props =>{
     const {
-      data, 
-      onClick
+      data
     } = props;
-  
-    const ShowStatus = () =>{
-      if(data.item.IsExpired === 1){
-        return (<Text>Expired</Text>)
-      }
-  
-      if(data.item.IsPaid === 1){
-        return (<Text>History</Text>)
-      }
-  
-      if(data.item.IsPaid === 0 && data.item.IsExpired === 0){
-        return (<Text>Active</Text>)
-      }
-    }
+
+    console.log(data);
+
+    const item = data.item;
   
     return (
-      <TouchableHighlight style={styles.rowFrontVisible} onPress={onClick}>
+      <TouchableHighlight style={styles.rowFrontVisible}>
           <View>
-            <Text style={styles.title} numberOfLines={1}>{data.item.Title}</Text>
-            <Text style={styles.details} numberOfLines={1}>{data.item.Description}</Text>
-            <Text style={styles.details} numberOfLines={1}>Expiry : {data.item.Expiry}</Text>
-            <Text style={styles.status} numberOfLines={1}>{ShowStatus()}</Text>
+            <Text style={styles.title} numberOfLines={1}>{item.Title}</Text>
+            <Text style={styles.details} numberOfLines={1}>Cost: {item.Cost}</Text>
+            <Text style={styles.details} numberOfLines={1}>Quantity : {item.Quantity}</Text>
+
+            <Text style={styles.details} numberOfLines={1}>Person : {item.Firstname} {item.Lastname}</Text>
+            <Text style={styles.details} numberOfLines={1}>Phone number : {item.PhoneNumber}</Text>
           </View>
       </TouchableHighlight>
     )
@@ -142,7 +130,7 @@ const PendingList = (props) => {
         rowMap={rowMap}
         rowActionAnimatedValue={rowActionAnimatedValue}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
-        onClose={() => makeHistory(data.item.ID)}
+        onClose={() => edit(data.item.ID)}
         onDelete={() => deleteRow(data.item.ID)}
       />
     )
@@ -158,28 +146,100 @@ const PendingList = (props) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-        <OccasionInspect setModalIsVisible={setModalIsVisible} modalIsVisible={modalIsVisible} inspectID={inspectID}/>
+      <Modal visible={modalIsVisible}>
 
-        <SwipeListView
-            style={styles.swipeList}
-            data={activeOccasions}
-            renderItem={renderVisibleItem}
-            keyExtractor={(item) => item.ID}
-            renderHiddenItem={renderHiddenItem}
-            rightOpenValue={-150}
-            disableRightSwipe
-            stopRightSwipe={-150}/>
-    </SafeAreaView>
+        <SafeAreaView style={texts.container}>
+            <Text style={texts.title}>Occasion info</Text>
+        </SafeAreaView>
+
+        <View style={styles.container}>
+            <SwipeListView
+                style={styles.swipeList}
+                data={items}
+                renderItem={renderVisibleItem}
+                keyExtractor={(item) => item.ID}
+                renderHiddenItem={renderHiddenItem}
+                rightOpenValue={-150}
+                disableRightSwipe
+                stopRightSwipe={-150}/>
+        </View>
+        
+        <View style={buttons.container}>
+            <View style={map.container}>            
+                <LocationOnMap 
+                latitude={52} 
+                longitude={55} 
+                visibleMap={visibleMap} 
+                setVisibleMap={setVisibleMap}/>
+            </View>
+
+            <TouchableOpacity style={buttons.button} onPress={() => setVisibleMap(true)}>
+                <Text style={buttons.text}>See location on maps</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={buttons.button} onPress={() => setModalIsVisible(false)}>
+                <Text style={buttons.text}>Close</Text>
+            </TouchableOpacity>
+
+        </View>
+      </Modal>
   );
 };
 
-export default PendingList;
+export default OccasionInspect;
+
+const texts = StyleSheet.create({
+    container:{
+        flex: 1,
+        backgroundColor: "#121212",
+    },
+    title:{
+        fontSize: 25,
+        padding: 25,
+        backgroundColor: "#121212",
+        color: "#c6a1e7"
+    }
+});
+
+const buttons = StyleSheet.create({
+    container:{
+        flex: 2,
+        display: "flex",
+        justifyContent: "space-evenly",
+        backgroundColor: "#121212",
+        padding: 20
+
+    },
+    button: {    
+        marginLeft: 3,
+        marginRight: 3,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        width: "100%",
+        backgroundColor: 'white',
+    },
+    text: {
+        fontSize: 16,
+        lineHeight: 21,
+        fontWeight: 'bold',
+        letterSpacing: 0.25,
+        color: 'black',
+    }
+});
+
+const map = StyleSheet.create({
+    container: {
+        padding: 20
+    }
+});
 
 const styles = StyleSheet.create({
   container: {
+    flex: 2,
     backgroundColor: '#121212',
-    width: "100%",
     paddingStart: 10,
     paddingEnd: 10,
   },

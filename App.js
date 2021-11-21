@@ -22,8 +22,8 @@ import AddPersonToItem from './Components/Occasions/Add/Screens/AddPersonToItem'
 
 import { PeopleContext } from './Components/Context/PeopleContext';
 import { ItemsContext } from './Components/Context/ItemsContext';
-import { configureTables, dropTables, getAll } from './Components/SQL/DBHelper';
-import { OccasionInspect } from './Components/Occasions/Add/Screens/OccasionInspect';
+import { configureTables, DeleteItem, DeleteOccasion, dropTables, getAll } from './Components/SQL/DBHelper';
+import { OccasionInspect } from './Components/Occasions/Inspect/OccasionInspect';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

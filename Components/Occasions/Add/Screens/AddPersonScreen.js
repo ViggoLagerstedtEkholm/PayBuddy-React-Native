@@ -21,7 +21,7 @@ export default function AddPersonScreen ({navigation}) {
     const {setPeople} = useContext(PeopleContext);
 
     const validate = () =>{
-      if(name && phoneNumber){
+      if(firstName && lastName && phoneNumber){
         if(isNumber(phoneNumber)){
           setPeople(oldArray => [...oldArray, {firstName: firstName, lastName : lastName, phoneNumber: phoneNumber, key : uuid.v4()}]);
           navigation.navigate({name: 'MultiPageForm'});

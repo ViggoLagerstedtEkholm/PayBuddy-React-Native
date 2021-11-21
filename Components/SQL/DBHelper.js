@@ -1,7 +1,12 @@
 import * as SQLite from "expo-sqlite";
 
 function connect(){
-    return SQLite.openDatabase('PayBuddy.db');
+    const db = SQLite.openDatabase('PayBuddyStorage.db');
+    db.exec([{ sql: 'PRAGMA foreign_keys = ON;', args: [] }], false, () =>
+    console.log('Foreign keys turned on')
+    );
+
+    return db;
 }
 
 export const configureTables = () =>{
@@ -107,7 +112,7 @@ const selectALL = (name) =>{
                         console.log(name + ' ', item);
                     }
                 }else{
-                    console.log('Empty!');
+                    console.log('Empty! ', name);
                 }
             }
         )
@@ -119,31 +124,34 @@ export const insertOccasion = (occasion) =>{
 
     const connection = connect();
 
-    connection.transaction((tx) => {
-        tx.executeSql(
-            "INSERT INTO Occasion (Title, Description, Expiry, IsPaid, IsExpired) VALUES (?, ?, ?, ?, ?)",
-            [Title, Description, Expiry, IsPaid, IsExpired],
-            function(tx, res){
-                const OccasionID = res.insertId;
+    return new Promise((resolve, reject) => {
+        connection.transaction((tx) => {
+            tx.executeSql(
+                "INSERT INTO Occasion (Title, Description, Expiry, IsPaid, IsExpired) VALUES (?, ?, ?, ?, ?)",
+                [Title, Description, Expiry, IsPaid, IsExpired],
+                function(tx, res){
+                    resolve(res);
 
-                const {Location} = occasion;
-                //Insert occasion location.
-                insertLocation(Location, OccasionID);
+                    const OccasionID = res.insertId;
+                    const {Location} = occasion;
+                    //Insert occasion location.
+                    insertLocation(Location, OccasionID);
 
-                const {Items} = occasion;
-                //For every item in occasion...
-                for (let i = 0; i < Items.length; i++) {
-                    const item = Items[i];
+                    const {Items} = occasion;
+                    //For every item in occasion...
+                    for (let i = 0; i < Items.length; i++) {
+                        const item = Items[i];
 
-                    //Insert item in occasion...
-                    insertItem(item, OccasionID);
+                        //Insert item in occasion...
+                        insertItem(item, OccasionID);
+                    }
+                },
+                function(error){
+                    reject(error);
                 }
-            },
-            function(error){
-                console.log(error);
-            }
-        );
-    })
+            );
+        })
+    });
 }
 
 export const insertItem = (item, OccasionID) =>{
@@ -183,11 +191,33 @@ export const insertPerson = (person, ItemID) =>{
     })
 }
 
+export const GetLocationByID = (ID) =>{
+    return new Promise((resolve, reject) => {
+        connect().transaction((tx) => {
+            tx.executeSql(
+                "SELECT * FROM Location WHERE OccasionID = ?",
+                [ID],
+                function(tx, result){     
+                    if (result && result.rows && result.rows._array) {
+                        resolve(result.rows._array);
+                    }else{
+                        resolve([]);
+                    }   
+                },
+                (error => reject(error))
+            );
+        })    
+    });
+}
+
 export const GetItemsByID = (ID) =>{
     return new Promise((resolve, reject) => {
         connect().transaction((tx) => {
             tx.executeSql(
-                "SELECT * FROM Item WHERE OccasionID = ?",
+                "SELECT * FROM Item "
+                + "JOIN Person "
+                + "ON Person.ItemID = Item.ID "
+                + "WHERE Item.OccasionID = ?",
                 [ID],
                 function(tx, result){     
                     if (result && result.rows && result.rows._array) {
@@ -206,11 +236,16 @@ export const DeleteOccasion = (ID) =>{
     Execute("DELETE FROM Occasion WHERE ID = ?", [ID]);
 }
 
+export const DeleteItem = (ID) =>{
+    Execute("DELETE FROM Item WHERE ID = ?", [ID]);
+}
+
 export const MakeActiveToHistory = (ID) => {
     Execute("UPDATE Occasion SET IsPaid = 1 WHERE ID = ?", [ID]);
 }
 
 export const MakeHistoryToPending = (ID) => {
+    console.log(ID);
     Execute("UPDATE Occasion SET IsPaid = 0 WHERE ID = ?", [ID]);
 }
 
@@ -246,7 +281,12 @@ const Execute = (query, params) =>{
     connect().transaction((tx) => {
         tx.executeSql(
             query,
-            params
+            params,
+            null,
+            function(error){
+                console.log('Error found : ');
+                console.log(error);
+            },
         );
     })
 }

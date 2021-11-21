@@ -10,7 +10,7 @@ import {
 const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 export default function Pagination (props) {
-  const {nextStep, previousStep} = props;
+    const {nextStep, previousStep} = props;
 
     return (
         <View style={styles.footer}>

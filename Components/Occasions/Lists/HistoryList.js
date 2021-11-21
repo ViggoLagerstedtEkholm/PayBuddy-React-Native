@@ -24,22 +24,22 @@ const HistoryList = (props) => {
       });
   }, [props.searchPhrase]);
 
-  const closeRow = (rowMap, rowKey) =>{
+  const closeRow = (rowKey) =>{
+    deleteRowFromList(rowKey);
     MakeHistoryToPending(rowKey);
-    deleteRow(rowMap, rowKey);
   }
 
-  const deleteRow = (rowMap, rowKey) =>{
+  const deleteRow = (rowKey) =>{
+    deleteRowFromList(rowKey);
+    DeleteOccasion(rowKey);
+  }
+
+  const deleteRowFromList = (rowKey) =>{
     const newData = [... historyOccasions];
     const prevIndex = historyOccasions.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
     setHistoryOccasions(newData);
-    DeleteOccasion(rowKey);
   }
-
-  const onLeftAction = rowKey => {
-    console.log('onLeftAction', rowKey);
-  };
 
   const renderItem = (data, rowMap) =>{
     return (
@@ -97,8 +97,8 @@ const HistoryList = (props) => {
         rowMap={rowMap}
         rowActionAnimatedValue={rowActionAnimatedValue}
         rowHeightAnimatedValue={rowHeightAnimatedValue}
-        onClose={() => closeRow(rowMap, data.item.ID)}
-        onDelete={() => deleteRow(rowMap, data.item.ID)}
+        onClose={() => closeRow(data.item.ID)}
+        onDelete={() => deleteRow(data.item.ID)}
       />
     )
   }
@@ -115,7 +115,6 @@ const HistoryList = (props) => {
             leftOpenValue={90}
             stopLeftSwipe={90}
             stopRightSwipe={-150}
-            onLeftAction={onLeftAction}
       />
     </SafeAreaView>
   );
