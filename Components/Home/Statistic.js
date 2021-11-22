@@ -6,13 +6,28 @@ import {
   Button
 } from 'react-native';
 
-export default function Statistic({ name, value }) {
-  return (
-    <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>{name}</Text>
-        <Text style={styles.value}>{value}</Text>
-    </SafeAreaView>
-  );
+export default function Statistic({ name, value, format }){
+  if(format){
+    var formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+  
+    const valueFormatted = formatter.format(value);  
+    return (
+      <SafeAreaView style={styles.container}>
+          <Text style={styles.title}>{name}</Text>
+          <Text style={styles.value}>{valueFormatted}</Text>
+      </SafeAreaView>
+    );
+  }else{
+    return (
+      <SafeAreaView style={styles.container}>
+          <Text style={styles.title}>{name}</Text>
+          <Text style={styles.value}>{value}</Text>
+      </SafeAreaView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -42,7 +57,7 @@ const styles = StyleSheet.create({
   },
 
   value: {
-      fontSize: 15,
+      fontSize: 25,
       color: "#b2adb8"
   }
 });

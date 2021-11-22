@@ -18,6 +18,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons'; 
 import { DeleteOccasion, GetActiveOccasions, MakeActiveToHistory } from "../../SQL/DBHelper";
 import OccasionInspect from "../Inspect/OccasionInspect";
+import { VisibleItemWithActions } from "../VisibleItemsList/VisibleItem";
 
 const PendingList = (props) => {
   const [activeOccasions, setActiveOccasions] = useState([]);
@@ -60,38 +61,6 @@ const PendingList = (props) => {
     const prevIndex = activeOccasions.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
     setActiveOccasions(newData);
-  }
-
-  const VisibleItemWithActions = props =>{
-    const {
-      data, 
-      onClick
-    } = props;
-  
-    const ShowStatus = () =>{
-      if(data.item.IsExpired === 1){
-        return (<Text>Expired</Text>)
-      }
-  
-      if(data.item.IsPaid === 1){
-        return (<Text>History</Text>)
-      }
-  
-      if(data.item.IsPaid === 0 && data.item.IsExpired === 0){
-        return (<Text>Active</Text>)
-      }
-    }
-  
-    return (
-      <TouchableHighlight style={styles.rowFrontVisible} onPress={onClick}>
-          <View>
-            <Text style={styles.title} numberOfLines={1}>{data.item.Title}</Text>
-            <Text style={styles.details} numberOfLines={1}>{data.item.Description}</Text>
-            <Text style={styles.details} numberOfLines={1}>Expiry : {data.item.Expiry}</Text>
-            <Text style={styles.status} numberOfLines={1}>{ShowStatus()}</Text>
-          </View>
-      </TouchableHighlight>
-    )
   }
 
   const HiddenItemWithActions = props =>{

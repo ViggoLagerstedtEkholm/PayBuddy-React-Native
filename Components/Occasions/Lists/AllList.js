@@ -7,14 +7,17 @@ import {
     StyleSheet
 } from "react-native";
 
-import {VisibleItem} from '../VisibleItemsList/VisibleItem';
+import {VisibleItemWithActions} from '../VisibleItemsList/VisibleItem';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { AntDesign } from '@expo/vector-icons'; 
 import { filterItems } from "./Helpers";
 import { GetAllOccasions, MakeOccasionExpired } from "../../SQL/DBHelper";
+import OccasionInspect from "../Inspect/OccasionInspect";
 
 const AllList = (props) => {
   const [allOccasions, setAllOccasions] = useState([]);
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [inspectID, setInspectID] = useState(null);
 
   useEffect(() => {
       GetAllOccasions().then((response) => {
@@ -28,6 +31,12 @@ const AllList = (props) => {
     const prevIndex = allOccasions.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
     setAllOccasions(newData);
+  }
+
+  const onClicked = (rowKey) =>{
+    setInspectID(rowKey);
+    setModalIsVisible(true);
+    console.log(rowKey);
   }
 
   const HiddenItemWithActions = props =>{
@@ -76,18 +85,23 @@ const AllList = (props) => {
     )
   }
 
-  const renderItem = (data) =>{
+  const renderVisibleItem = (data, rowMap) =>{
     return (
-      <VisibleItem data={data}/>
+      <VisibleItemWithActions
+        data={data}
+        onClick={() => onClicked(data.item.ID)}
+      />
     )
   }
 
   return (
     <SafeAreaView style={styles.container}>
+        <OccasionInspect setModalIsVisible={setModalIsVisible} modalIsVisible={modalIsVisible} inspectID={inspectID}/>
+
         <SwipeListView
             style={styles.swipeList}
             data={allOccasions}
-            renderItem={renderItem}
+            renderItem={renderVisibleItem}
             keyExtractor={(item) => item.ID}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-75}

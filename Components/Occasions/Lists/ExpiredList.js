@@ -8,16 +8,19 @@ import {
     TouchableOpacity,
 } from "react-native";
 
-import {VisibleItem} from '../VisibleItemsList/VisibleItem';
+import {VisibleItemWithActions} from '../VisibleItemsList/VisibleItem';
 import { filterItems } from "./Helpers";
 
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons'; 
 import { DeleteOccasion, GetExpiredOccasions } from "../../SQL/DBHelper";
+import OccasionInspect from "../Inspect/OccasionInspect";
 
 const ExpiredList = (props) => {
   const [expiredOccasions, setExpiredOccasions] = useState([]);
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [inspectID, setInspectID] = useState(null);
 
   useEffect(() => {
       GetExpiredOccasions().then((response) => {
@@ -31,18 +34,18 @@ const ExpiredList = (props) => {
     }  
   }
 
+  const onClicked = (rowKey) =>{
+    setInspectID(rowKey);
+    setModalIsVisible(true);
+    console.log(rowKey);
+  }
+
   const deleteRow = (rowMap, rowKey) =>{
     const newData = [... expiredOccasions];
     const prevIndex = expiredOccasions.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
     setExpiredOccasions(newData);
     DeleteOccasion(rowKey);
-  }
-
-  const renderItem = (data, rowMap) =>{
-    return (
-      <VisibleItem data={data}/>
-    )
   }
 
   const HiddenItemWithActions = props =>{
@@ -100,12 +103,23 @@ const ExpiredList = (props) => {
     )
   }
 
+  const renderVisibleItem = (data, rowMap) =>{
+    return (
+      <VisibleItemWithActions
+        data={data}
+        onClick={() => onClicked(data.item.ID)}
+      />
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+        <OccasionInspect setModalIsVisible={setModalIsVisible} modalIsVisible={modalIsVisible} inspectID={inspectID}/>
+
         <SwipeListView
             style={styles.swipeList}
             data={expiredOccasions}
-            renderItem={renderItem}
+            renderItem={renderVisibleItem}
             keyExtractor={(item) => item.ID}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-150}
@@ -113,8 +127,7 @@ const ExpiredList = (props) => {
             leftActivationValue={100}
             rightActivationValue={-200}
             leftActionValue={0}
-            stopRightSwipe={-150}
-      /> 
+            stopRightSwipe={-150}/> 
     </SafeAreaView>
   );
 };

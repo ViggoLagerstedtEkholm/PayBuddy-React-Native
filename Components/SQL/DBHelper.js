@@ -40,6 +40,7 @@ const createOccasionTable = () =>{
             + "Description TEXT, "
             + "Expiry DATETIME, "
             + "IsPaid BOOLEAN, "
+            + "BaseCurrency TEXT, "
             + "IsExpired BOOLEAN);"
         )
     })
@@ -230,6 +231,57 @@ export const GetItemsByID = (ID) =>{
             );
         })    
     });
+}
+
+export const GetValue = (query) =>{
+    return new Promise((resolve, reject) => {
+        connect().transaction((tx) => {
+            tx.executeSql(
+                query,
+                [],
+                function(tx, result){     
+                    var len = result.rows.length;
+                
+                    if(len > 0){
+                        var item = result.rows.item(0);
+                        resolve(item);
+                        
+                    }else{
+                        resolve(0);
+                    }
+                },
+                (error => reject(error))
+            );
+        })    
+    });
+}
+
+export const GetTotalCost = () =>{
+    return GetValue("SELECT SUM(Cost * Quantity) AS TOTAL_COST FROM Item");
+}
+
+export const GetTotalPendingCost = () =>{
+    return GetValue("SELECT SUM(Cost * Quantity) AS TOTAL_COST FROM Item JOIN Occasion ON Item.OccasionID = Occasion.ID WHERE IsPaid = 0");
+}
+
+export const GetTotalHistoryCost = () =>{
+    return GetValue("SELECT SUM(Cost * Quantity) AS TOTAL_COST FROM Item JOIN Occasion ON Item.OccasionID = Occasion.ID WHERE IsPaid = 1");
+}
+
+export const GetTotalExpiredCost = () =>{
+    return GetValue("SELECT SUM(Cost * Quantity) AS TOTAL_COST FROM Item JOIN Occasion ON Item.OccasionID = Occasion.ID WHERE IsExpired = 1");
+}
+
+export const GetAmountPending = () =>{
+    return GetValue("SELECT Count(*) AS AMOUNT FROM Occasion WHERE isPaid = 0");
+}
+
+export const GetAmountHistory = () =>{
+    return GetValue("SELECT Count(*) AS AMOUNT FROM Occasion WHERE isPaid = 1");
+}
+
+export const GetAmountExpired = () =>{
+    return GetValue("SELECT Count(*) AS AMOUNT FROM Occasion WHERE IsExpired = 1");
 }
 
 export const DeleteOccasion = (ID) =>{

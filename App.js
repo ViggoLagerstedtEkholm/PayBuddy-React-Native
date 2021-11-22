@@ -11,7 +11,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Home from './Components/Home/Home';
-import Settings from './Components/Settings/Settings';
+import Setting from './Components/Settings/Setting';
 import Search from './Components/Occasions/Search';
 import Map from './Components/Maps/Map';
 
@@ -22,8 +22,7 @@ import AddPersonToItem from './Components/Occasions/Add/Screens/AddPersonToItem'
 
 import { PeopleContext } from './Components/Context/PeopleContext';
 import { ItemsContext } from './Components/Context/ItemsContext';
-import { configureTables, DeleteItem, DeleteOccasion, dropTables, getAll } from './Components/SQL/DBHelper';
-import { OccasionInspect } from './Components/Occasions/Inspect/OccasionInspect';
+import { configureTables, getAll } from './Components/SQL/DBHelper';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -85,11 +84,11 @@ export default function App() {
           }}>
 
           <Tab.Screen 
-          name="Settings" 
-          component={Settings}
+          name="Setting" 
+          component={Setting}
           backgroundColor="#1c1c1c"
           options={{
-            tabBarLabel: 'Settings',
+            tabBarLabel: 'Setting',
             tabBarIcon: () => (            
                 <AntDesign name="setting" size={22} color={color} />            
             ),

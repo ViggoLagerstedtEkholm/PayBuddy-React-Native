@@ -5,18 +5,21 @@ import {
     View,
     SafeAreaView,
     Animated,
-    TouchableOpacity,
+    TouchableOpacity
 } from "react-native";
 
-import {VisibleItem} from '../VisibleItemsList/VisibleItem';
+import { VisibleItemWithActions} from '../VisibleItemsList/VisibleItem';
 import { filterItems } from "./Helpers";
 
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { DeleteOccasion, GetHistoryOccasions, MakeHistoryToPending } from "../../SQL/DBHelper";
+import OccasionInspect from "../Inspect/OccasionInspect";
 
 const HistoryList = (props) => {
   const [historyOccasions, setHistoryOccasions] = useState([]);
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [inspectID, setInspectID] = useState(null);
 
   useEffect(() => {
       GetHistoryOccasions().then((response) => {
@@ -34,17 +37,17 @@ const HistoryList = (props) => {
     DeleteOccasion(rowKey);
   }
 
+  const onClicked = (rowKey) =>{
+    setInspectID(rowKey);
+    setModalIsVisible(true);
+    console.log(rowKey);
+  }
+
   const deleteRowFromList = (rowKey) =>{
     const newData = [... historyOccasions];
     const prevIndex = historyOccasions.findIndex(item => item.ID === rowKey);
     newData.splice(prevIndex, 1);
     setHistoryOccasions(newData);
-  }
-
-  const renderItem = (data, rowMap) =>{
-    return (
-      <VisibleItem data={data}/>
-    )
   }
 
   const HiddenItemWithActions = props =>{
@@ -103,12 +106,23 @@ const HistoryList = (props) => {
     )
   }
 
+  const renderVisibleItem = (data, rowMap) =>{
+    return (
+      <VisibleItemWithActions
+        data={data}
+        onClick={() => onClicked(data.item.ID)}
+      />
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+        <OccasionInspect setModalIsVisible={setModalIsVisible} modalIsVisible={modalIsVisible} inspectID={inspectID}/>
+
         <SwipeListView
             style={styles.swipeList}
             data={historyOccasions}
-            renderItem={renderItem}
+            renderItem={renderVisibleItem}
             keyExtractor={(item) => item.ID}
             renderHiddenItem={renderHiddenItem}
             rightOpenValue={-150}

@@ -1,14 +1,17 @@
-import React, {useState} from "react";
+import React from "react";
 
 import {
     View,
     Text,
-    TouchableOpacity,
-    StyleSheet
+    StyleSheet,
+    TouchableHighlight
 } from "react-native";
 
-export const VisibleItem = props =>{
-  const {data, onClicked} = props;
+export const VisibleItemWithActions = props =>{
+  const {
+    data, 
+    onClick
+  } = props;
 
   const ShowStatus = () =>{
     if(data.item.IsExpired === 1){
@@ -25,14 +28,14 @@ export const VisibleItem = props =>{
   }
 
   return (
-    <TouchableOpacity style={styles.rowFrontVisible} onPress={onClicked(data.item.ID)}>
+    <TouchableHighlight style={styles.rowFrontVisible} onPress={onClick}>
         <View>
           <Text style={styles.title} numberOfLines={1}>{data.item.Title}</Text>
           <Text style={styles.details} numberOfLines={1}>{data.item.Description}</Text>
           <Text style={styles.details} numberOfLines={1}>Expiry : {data.item.Expiry}</Text>
           <Text style={styles.status} numberOfLines={1}>{ShowStatus()}</Text>
         </View>
-    </TouchableOpacity>
+    </TouchableHighlight>
   )
 }
 

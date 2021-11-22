@@ -11,7 +11,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const Options = (props) => {
     const [allPressed, setAllPressed] = useState(false);
-    const [pendingPressed, setPendingPressed] = useState(false);
+    const [pendingPressed, setPendingPressed] = useState(true);
     const [historyPressed, setHistoryPressed] = useState(false);
     const [expiredPressed, setExpiredPressed] = useState(false);
 
