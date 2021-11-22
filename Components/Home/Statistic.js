@@ -3,17 +3,20 @@ import {
   StyleSheet, 
   Text,
   SafeAreaView,
-  Button
+  Settings
 } from 'react-native';
 
-export default function Statistic({ name, value, format }){
+export default function Statistic(props){
+  const {name, value, format, activeCurrency} = props;
+
   if(format){
     var formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: activeCurrency,
     });
   
     const valueFormatted = formatter.format(value);  
+
     return (
       <SafeAreaView style={styles.container}>
           <Text style={styles.title}>{name}</Text>

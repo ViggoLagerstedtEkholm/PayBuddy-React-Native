@@ -1,4 +1,4 @@
-import React, { useContext, useState} from 'react';
+import React, { useState} from 'react';
 
 import LocationScreen from '../Screens/LocationScreen';
 import PeopleScreen from '../Screens/PeopleScreen';
@@ -8,17 +8,12 @@ import TitleScreen from '../Screens/TitleScreen';
 import DateScreen from '../Screens/DateScreen';
 
 import Screen from './Screen';
-import { ItemsContext } from '../../../Context/ItemsContext';
-import { PeopleContext } from '../../../Context/PeopleContext';
 
 export default function MultiPageForm ({ navigation}) {
     const [step, setStep] = useState(1);
     const [title, setTitle] = useState("");
     const [date, setDate] = useState(new Date());
     const [location, setLocation] = useState(null);
-
-    const {items} = useContext(ItemsContext);
-    const {people} = useContext(PeopleContext);
 
     const totalSteps = 6;
 

@@ -211,6 +211,26 @@ export const GetLocationByID = (ID) =>{
     });
 }
 
+export const GetAllLocations = () =>{
+    return new Promise((resolve, reject) => {
+        connect().transaction((tx) => {
+            tx.executeSql(
+                "SELECT * FROM Location JOIN Occasion ON Location.OccasionID = Occasion.ID",
+                [],
+                function(tx, result){     
+                    if (result && result.rows && result.rows._array) {
+                        resolve(result.rows._array);
+                    }else{
+                        resolve([]);
+                    }   
+                },
+                (error => reject(error))
+            );
+        })    
+    });
+}
+
+
 export const GetItemsByID = (ID) =>{
     return new Promise((resolve, reject) => {
         connect().transaction((tx) => {
@@ -273,7 +293,7 @@ export const GetTotalExpiredCost = () =>{
 }
 
 export const GetAmountPending = () =>{
-    return GetValue("SELECT Count(*) AS AMOUNT FROM Occasion WHERE isPaid = 0");
+    return GetValue("SELECT Count(*) AS AMOUNT FROM Occasion WHERE isPaid = 0 AND IsExpired = 0");
 }
 
 export const GetAmountHistory = () =>{

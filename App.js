@@ -28,7 +28,7 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function OccasionStack(){
-  const [people, setPeople] = useState([{firstName : "firstName1", lastName : "lastName1", phoneNumber: "number1", key: 1}]);
+  const [people, setPeople] = useState([]);
   const peopleItems = useMemo(() => ({people, setPeople}), [people, setPeople]);
 
   const [items, setItems] = useState([]);
@@ -61,7 +61,6 @@ function OccasionStack(){
 export default function App() {
 
   useEffect(() => {
-    //dropTables();
     configureTables();
     getAll();
   }, []);

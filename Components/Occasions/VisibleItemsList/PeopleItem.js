@@ -8,16 +8,17 @@ import {
 } from "react-native";
 
   export const PeopleItem = props =>{
-    const {name, phoneNumber} = props.data.item;
+    const {firstName, lastName, phoneNumber} = props.data.item;
     console.log(props);
 
     return (
-        <TouchableHighlight style={styles.rowFrontVisible}>
-            <View>
-            <Text style={styles.title} numberOfLines={1}>{name}</Text>
-            <Text style={styles.details} numberOfLines={1}>{phoneNumber}</Text>
-            </View>
-        </TouchableHighlight>
+      <TouchableHighlight style={styles.rowFrontVisible}>
+        <View>
+          <Text style={styles.description}>Firstname</Text><Text style={styles.details} numberOfLines={1}>{firstName}</Text>
+          <Text style={styles.description}>Lastname</Text><Text style={styles.details} numberOfLines={1}>{lastName}</Text>
+          <Text style={styles.description}>Phone number </Text><Text style={styles.details} numberOfLines={1}>{phoneNumber}</Text>
+        </View>
+    </TouchableHighlight>
     )
 }
 
@@ -25,20 +26,22 @@ const styles = StyleSheet.create({
   rowFrontVisible: {
     backgroundColor: "#3a2d49",
     borderRadius: 5,
-    height: 150,
     marginTop: 5,
     marginBottom: 5,
     width: "100%",
     padding: 10,
   },
   title: {
-    fontSize: 14,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#666',
+    color: 'white',
   },
   details: {
-    fontSize: 12,
+    fontSize: 16,
     color: '#999',
   },
+  description:{
+    color: "#c6a1e7"
+  }
 });

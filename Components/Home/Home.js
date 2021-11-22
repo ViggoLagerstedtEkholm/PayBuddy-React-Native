@@ -10,7 +10,7 @@ import { GetAmountExpired, GetAmountHistory, GetAmountPending, GetTotalCost, Get
 
 import Statistic from './Statistic';
 
-export default function Home() {
+export default function Home(props) {
   const [totalCost, setTotalCost] = useState(0);
   const [totalPendingCost, setTotalPendingCost] = useState(0);
   const [totalHistoryCost, setTotalHistoryCost] = useState(0);
@@ -18,8 +18,13 @@ export default function Home() {
   const [totalAmountPending, setTotalAmountPending] = useState(0);
   const [totalAmountHistory, setTotalAmountHistory] = useState(0);
   const [totalAmountExpired, setTotalAmountExpired] = useState(0);
+  const [activeCurrency, setActiveCurrency] = useState(Settings.get('currency'));
 
   useEffect(() =>{
+    props.navigation.addListener('focus', () => {
+      setActiveCurrency(Settings.get('currency'));
+    });
+
     GetTotalCost().then(response =>{
       setTotalCost(response.TOTAL_COST);
     }).catch(error =>{
@@ -65,15 +70,15 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.currency}>Currency : <Text style={styles.value}>{Settings.get('currency')}</Text></Text>
+      <Text style={styles.currency}>Currency : <Text style={styles.value}>{activeCurrency}</Text></Text>
        <ScrollView>
-            <Statistic name="Total cost of all occasions" value={totalCost} format={true}/>
-            <Statistic name="Total cost of pending occasions" value={totalPendingCost} format={true}/> 
-            <Statistic name="Total cost of history occasions" value={totalHistoryCost} format={true}/>
-            <Statistic name="Total cost of expired occasions" value={totalExpiredCost} format={true}/>     
-            <Statistic name="Total amount pending occasions" value={totalAmountPending} format={false}/> 
-            <Statistic name="Total amount history occasions" value={totalAmountHistory} format={false}/>
-            <Statistic name="Total amount expired occasions" value={totalAmountExpired} format={false}/>    
+            <Statistic name="Total cost of all occasions" value={totalCost} format={true} activeCurrency={activeCurrency}/>
+            <Statistic name="Total cost of pending occasions" value={totalPendingCost} format={true} activeCurrency={activeCurrency}/> 
+            <Statistic name="Total cost of history occasions" value={totalHistoryCost} format={true} activeCurrency={activeCurrency}/>
+            <Statistic name="Total cost of expired occasions" value={totalExpiredCost} format={true} activeCurrency={activeCurrency}/>     
+            <Statistic name="Total amount pending occasions" value={totalAmountPending} format={false} activeCurrency={activeCurrency}/> 
+            <Statistic name="Total amount history occasions" value={totalAmountHistory} format={false} activeCurrency={activeCurrency}/>
+            <Statistic name="Total amount expired occasions" value={totalAmountExpired} format={false} activeCurrency={activeCurrency}/>    
         </ScrollView>
     </View>
   );
